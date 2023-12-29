@@ -1,25 +1,35 @@
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 
-
 var buttonColors = WindowButtonColors(
-  iconNormal: Colors.black,
-  mouseOver: const Color(0xFF00224b),
-  mouseDown: Colors.black,
+  iconNormal: Colors.grey[400],
   iconMouseOver: Colors.white,
-  iconMouseDown: Colors.white,
+  iconMouseDown: const Color(0xFF00224b),
+  mouseOver: const Color(0xFF00224b),
+  mouseDown: const Color(0xFF00224b),
+);
+
+var buttonCloseColor = WindowButtonColors(
+  iconNormal: Colors.grey[400],
+  iconMouseOver: Colors.white,
+  mouseOver: const Color(0xFF00224b),
+  mouseDown: const Color(0xFF00224b),
 );
 
 class WindowButtons extends StatelessWidget {
-  const WindowButtons({super.key});
+  bool showMaximizeButton = true;
+  WindowButtons({required this.showMaximizeButton, super.key});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
         MinimizeWindowButton(colors: buttonColors),
-        MaximizeWindowButton(colors: buttonColors),
-        CloseWindowButton(),
+        Visibility(
+          visible: showMaximizeButton,
+          child: MaximizeWindowButton(colors: buttonColors),
+        ),
+        CloseWindowButton(colors: buttonCloseColor),
       ],
     );
   }
