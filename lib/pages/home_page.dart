@@ -1,9 +1,11 @@
 import 'package:amx_app/models/snkapi_cliente_model.dart';
 import 'package:amx_app/widgets/custom_textformfield_widget.dart';
+import 'package:amx_app/widgets/date_picker_widget.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:syncfusion_flutter_datepicker/datepicker.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -245,60 +247,65 @@ class _HomePageState extends State<HomePage> {
                     size: 10,
                   ),
                   const SizedBox(width: 7),
-                  Flexible(
-                    child: Container(
-                      width: 110,
-                      child: CustomTextFormField(
-                        enabled: enableData,
-                        maxLength: 10,
-                        onChanged: (value) async {
-                          if (value.length == 10) {
-                            codInvent = await getcodInvent();
-                            if (codInvent != 0) {
-                              contadorTotal = await getContadorTotal();
-                              setState(() {
-                                isButtonEnabled = true;
-                                enableData = false;
-                                enabledNumeroSerie = true;
-                                autofocusNumSerie = true;
-                                enableDropDown = false;
-                                //contadorTotal = contadorTotal;
-                              });
-                            } else {
-                              setState(() {
-                                enabledNumeroSerie = false;
-                              });
-                              final snackBar = SnackBar(
-                                backgroundColor: Colors.red[900],
-                                content: const Text(
-                                  'Não existe um inventário aberto para esta data no depósito selecionado.',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'Inter',
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                action: SnackBarAction(
-                                  textColor: Colors.white,
-                                  label: 'OK',
-                                  onPressed: () {
-                                    //TODO
-                                  },
-                                ),
-                              );
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(snackBar);
-                              setState(() {
-                                contadorTotal = 0;
-                              });
-                            }
-                          }
-                        },
-                        controller: dateController,
-                        inputFormatters: [maskFormater],
-                      ),
-                    ),
+                  // ElevatedButton(
+                  //   onPressed: () {
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //         builder: (context) => const DatePicker(),
+                  //       ),
+                  //     );
+                  //   },
+                  //   child: Text('Data'),
+                  // ),
+                  CustomTextFormField(
+                    enabled: enableData,
+                    maxLength: 10,
+                    onChanged: (value) async {
+                      if (value.length == 10) {
+                        codInvent = await getcodInvent();
+                        if (codInvent != 0) {
+                          contadorTotal = await getContadorTotal();
+                          setState(() {
+                            isButtonEnabled = true;
+                            enableData = false;
+                            enabledNumeroSerie = true;
+                            autofocusNumSerie = true;
+                            enableDropDown = false;
+                            //contadorTotal = contadorTotal;
+                          });
+                        } else {
+                          setState(() {
+                            enabledNumeroSerie = false;
+                          });
+                          final snackBar = SnackBar(
+                            backgroundColor: Colors.red[900],
+                            content: const Text(
+                              'Não existe um inventário aberto para esta data no depósito selecionado.',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontFamily: 'Inter',
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
+                              ),
+                            ),
+                            action: SnackBarAction(
+                              textColor: Colors.white,
+                              label: 'OK',
+                              onPressed: () {
+                                //TODO
+                              },
+                            ),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          setState(() {
+                            contadorTotal = 0;
+                          });
+                        }
+                      }
+                    },
+                    controller: dateController,
+                    inputFormatters: [maskFormater],
                   ),
                   const SizedBox(width: 7),
                 ],
@@ -406,6 +413,9 @@ class _HomePageState extends State<HomePage> {
                               numeroSerie.clear();
                               FocusScope.of(context).requestFocus(focusNode);
                             } else {
+                              await player.play(
+                                AssetSource('sounds/dcc765_Erro.wav'),
+                              );
                               setState(() {
                                 enabledNumeroSerie = false;
                               });
@@ -429,6 +439,8 @@ class _HomePageState extends State<HomePage> {
                                       numeroSerie.clear();
                                       enabledNumeroSerie = true;
                                     });
+                                    FocusScope.of(context)
+                                        .requestFocus(focusNode);
                                   },
                                 ),
                               );
