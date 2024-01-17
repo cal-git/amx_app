@@ -1,8 +1,4 @@
-import 'package:amx_app/responsive/constants.dart';
-import 'package:amx_app/widgets/custom_painter_widget.dart';
 import 'package:amx_app/widgets/validator_widget.dart';
-import 'package:amx_app/widgets/window_buttons_widget.dart';
-import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -17,6 +13,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool hasErrorNomeUsu = false;
+  bool hasErrorPassword = false;
   var duration = const Duration(
       days: 1,
       hours: 0,
@@ -123,159 +121,244 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     var textTheme = Theme.of(context).textTheme;
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          myWindowTitleBarBox,
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          double maxWidth = 1300;
+          bool removerImagem = constraints.maxWidth < maxWidth;
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              if (!removerImagem)
                 const Image(
-                  image: AssetImage('assets/images/Logo AMX Azul.png'),
+                  image: AssetImage('assets/images/Arte Reforce 1.png'),
+                  fit: BoxFit.contain,
+                  alignment: Alignment.centerLeft,
                 ),
-                const SizedBox(height: 32),
-                Text(
-                  'Bem-vindo(a).',
-                  style: textTheme.headlineSmall,
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  'Entre com seu usuário Sankhya e Senha.',
-                  style: textTheme.bodySmall,
-                ),
-                const SizedBox(height: 32),
-                Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      CustomTextFormField(
-                        obscureText: false,
-                        hintText: 'Usuário',
-                        controller: _nomeUsuController,
-                        onFieldSubmitted: (value) => _submitForm(),
-                        validator: (value) =>
-                            validator.usernameValidator(value),
-                        autofocus: false,
-                        labelText: 'Usuário',
-                      ),
-                      const SizedBox(height: 12),
-                      CustomTextFormField(
-                        obscureText: _obscureText,
-                        hintText: 'Senha',
-                        controller: _passwordController,
-                        onFieldSubmitted: (value) => _submitForm(),
-                        validator: (value) =>
-                            validator.passwordValidator(value),
-                        autofocus: false,
-                        labelText: 'Senha',
-                        suffixIcon: MouseRegion(
-                          cursor: SystemMouseCursors.click,
-                          child: GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                _obscureText = !_obscureText;
-                              });
-                            },
-                            child: Icon(
-                              _obscureText
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
-                              color: const Color(0xFF00224b),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 430,
+                      height: 520,
+                      padding: EdgeInsets.only(top: 0),
+                      decoration: BoxDecoration(
+                          color: const Color(0xFFFFFFFF),
+                          borderRadius: BorderRadius.circular(28),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color.fromARGB(
+                                  (0.10 * 255).round(), 0, 28, 75),
+                              offset: const Offset(12.0, 12.0),
+                              blurRadius: 62.0,
+                              spreadRadius: 0.0,
                             ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      Wrap(
-                        alignment: WrapAlignment.center,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        children: [
-                          Checkbox(
-                            value: _isChecked,
-                            onChanged: (bool? value) {
-                              setState(() {
-                                _isChecked = value!;
-                                isChecked();
-                              });
-                            },
-                            activeColor: const Color(0xFF00224b),
-                            checkColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4),
+                          ]),
+                      child: Form(
+                        key: _formKey,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 90,
+                              height: 90,
+                              padding: const EdgeInsets.all(25),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(26.0),
+                                color: const Color(0xFFC4CED7).withOpacity(0.3),
+                              ),
+                              child: const Image(
+                                image:
+                                    AssetImage('assets/images/user_747376.png'),
+                                fit: BoxFit.contain,
+                              ),
                             ),
-                            side: const BorderSide(
-                              color: Color(0xFFD0D5DD),
-                            ),
-                          ),
-                          Text(
-                            'Lembrar-me',
-                            style: textTheme.bodyMedium,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 112.5),
-                            child: GestureDetector(
-                              onTap: () => {
-                                openURL(),
+                            const SizedBox(height: 77),
+                            CustomTextFormField(
+                              hasError: hasErrorNomeUsu,
+                              onFieldSubmitted: (value) => _submitForm(),
+                              onChanged: (value) {
+                                _nomeUsuController.text = value;
+                                if (value.isEmpty) {
+                                  setState(() {
+                                    hasErrorNomeUsu = true;
+                                  });
+                                } else {
+                                  setState(() {
+                                    hasErrorNomeUsu = false;
+                                  });
+                                }
                               },
-                              child: const MouseRegion(
+                              height: 52,
+                              obscureText: false,
+                              hintText: 'Usuário',
+                              controller: _nomeUsuController,
+                              autofocus: false,
+                            ),
+                            const SizedBox(height: 12),
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 35),
+                                  child: Visibility(
+                                    visible: hasErrorNomeUsu,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(bottom: 12.0),
+                                      child: Text('Campo obrigatório',
+                                      style: TextStyle(
+                                        color: Colors.red[900],
+                                      ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            CustomTextFormField(
+                              hasError: hasErrorPassword,
+                              onChanged: (value) {
+                                _passwordController.text = value;
+                                if (value.isEmpty) {
+                                  setState(() {
+                                    hasErrorPassword = true;
+                                  });
+                                } else {
+                                  setState(() {
+                                    hasErrorPassword = false;
+                                  });
+                                }
+                              },
+                              onFieldSubmitted: (value) => _submitForm(),
+                              obscureText: _obscureText,
+                              height: 52,
+                              hintText: 'Senha',
+                              controller: _passwordController,
+                              suffixIcon: MouseRegion(
                                 cursor: SystemMouseCursors.click,
-                                child: Text(
-                                  'Esqueceu a Senha?',
+                                child: GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      _obscureText = !_obscureText;
+                                    });
+                                  },
+                                  child: Icon(
+                                    _obscureText
+                                        ? Icons.visibility_off
+                                        : Icons.visibility,
+                                    color: hasErrorPassword? Colors.red[900] : const Color(0xFF00224b),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 35),
+                                  child: Visibility(
+                                    visible: hasErrorPassword,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(bottom: 12.0),
+                                      child: Text('Campo obrigatório',
+                                      style: TextStyle(
+                                        color: Colors.red[900],
+                                      ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Wrap(
+                              alignment: WrapAlignment.center,
+                              crossAxisAlignment: WrapCrossAlignment.center,
+                              children: [
+                                Checkbox(
+                                  value: _isChecked,
+                                  onChanged: (bool? value) {
+                                    setState(() {
+                                      _isChecked = value!;
+                                      isChecked();
+                                    });
+                                  },
+                                  activeColor: const Color(0xFF00224b),
+                                  checkColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  side: const BorderSide(
+                                    color: Color(0xFFD0D5DD),
+                                  ),
+                                ),
+                                Text(
+                                  'Lembrar-me',
+                                  style: textTheme.bodyMedium,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 112.5),
+                                  child: GestureDetector(
+                                    onTap: () => {
+                                      openURL(),
+                                    },
+                                    child: const MouseRegion(
+                                      cursor: SystemMouseCursors.click,
+                                      child: Text(
+                                        'Esqueceu a Senha?',
+                                        style: TextStyle(
+                                          color: Color(0xFF00224b),
+                                          fontFamily: 'Inter',
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 55),
+                            Container(
+                              width: 360,
+                              height: 44,
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  _submitForm();
+                                },
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateColor.resolveWith(
+                                    (states) => const Color(0xFF001C4B),
+                                  ),
+                                  shape: MaterialStateProperty.resolveWith(
+                                    (states) => const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(8),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                child: const Text(
+                                  'ENTRAR',
                                   style: TextStyle(
-                                    color: Color(0xFF00224b),
+                                    color: Colors.white,
                                     fontFamily: 'Inter',
-                                    fontWeight: FontWeight.w600,
+                                    fontWeight: FontWeight.w500,
                                     fontSize: 14,
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 32),
-                      Container(
-                        width: 360,
-                        height: 44,
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            _submitForm();
-                          },
-                          style: ButtonStyle(
-                            backgroundColor: MaterialStateColor.resolveWith(
-                              (states) => const Color(0xFF00224b),
-                            ),
-                            shape: MaterialStateProperty.resolveWith(
-                              (states) => const RoundedRectangleBorder(
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(8),
-                                ),
-                              ),
-                            ),
-                          ),
-                          child: const Text(
-                            'ENTRAR',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontFamily: 'Inter',
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
-        ],
+              )
+            ],
+          );
+        },
       ),
     );
   }

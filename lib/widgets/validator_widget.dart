@@ -1,7 +1,7 @@
 class Validator {
   String? usernameValidator(String? value) {
     if (value == null || value.isEmpty) {
-      return 'Informe um nome de usuário.';
+      return 'Informe o nome de usuário Sankhya';
     } else {
       return null;
     }

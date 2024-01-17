@@ -4,6 +4,7 @@ import 'package:amx_app/responsive/desktop_scaffold.dart';
 import 'package:amx_app/responsive/mobile_scaffold.dart';
 import 'package:amx_app/responsive/responsive_layout.dart';
 import 'package:amx_app/responsive/tablet_scaffold.dart';
+
 import 'package:amx_app/theme.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final win = appWindow;
+    var minSize = const Size(500, 600);
+    win.title = 'Inventario AMX';
+    win.minSize = minSize;
     return MaterialApp(
       title: 'Inventario Americanflex',
       theme: theme,

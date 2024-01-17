@@ -15,11 +15,6 @@ class _MobileScaffoldState extends State<MobileScaffold> {
       appBar: myAppBar,
       backgroundColor: myDefaultBackground,
       drawer: myDrawer,
-      body: Column(
-        //4 box on the top
-        children: [],
-        // tiles below it
-      ),
     );
   }
 }

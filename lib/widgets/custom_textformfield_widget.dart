@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class CustomTextFormField extends StatelessWidget {
+class CustomTextFormField extends StatefulWidget {
+  bool hasError;
+  double? cursorHeight;
+  Radius? cursorRadius;
   FocusNode? focusNode;
   List<TextInputFormatter>? inputFormatters;
   int? maxLength;
@@ -66,54 +69,90 @@ class CustomTextFormField extends StatelessWidget {
     this.width = 360,
     this.height,
     this.focusNode,
+    this.cursorHeight,
+    this.cursorRadius,
+    this.hasError = false,
   }) : super(key: key);
 
   @override
+  State<CustomTextFormField> createState() => _CustomTextFormFieldState();
+}
+
+class _CustomTextFormFieldState extends State<CustomTextFormField> {
+  @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: width,
-      height: height,
-      child: TextFormField(
-        focusNode: focusNode,
-        inputFormatters: inputFormatters,
-        enabled: enabled,
-        key: key,
-        maxLength: maxLength,
-        onFieldSubmitted: onFieldSubmitted,
-        controller: controller,
-        keyboardType: keyboardType,
-        obscureText: obscureText,
-        validator: validator,
-        onChanged: onChanged,
-        onSaved: onSaved,
-        autofocus: autofocus,
-        autovalidateMode: autovalidateMode,
-        textDirection: textDirection,
-        style: textStyle,
-        cursorColor: cursorColor,
-        decoration: InputDecoration(
-          suffixIcon: suffixIcon,
-          hintText: hintText,
-          hintStyle: hintStyle,
-          labelText: labelText,
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: const Color(0xFFD0D5DD).withOpacity(1.0),
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFFC4CED7).withOpacity(0.3),
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: widget.hasError ? Colors.red : Colors.transparent,
+        ),
+      ),
+      width: widget.width,
+      height: widget.height,
+      child: Padding(
+        padding: const EdgeInsetsDirectional.symmetric(horizontal: 8.0),
+        child: TextFormField(
+          focusNode: widget.focusNode,
+          inputFormatters: widget.inputFormatters,
+          enabled: widget.enabled,
+          key: widget.key,
+          maxLength: widget.maxLength,
+          onFieldSubmitted: widget.onFieldSubmitted,
+          controller: widget.controller,
+          keyboardType: widget.keyboardType,
+          obscureText: widget.obscureText,
+          validator: widget.validator,
+          onChanged: widget.onChanged,
+          onSaved: widget.onSaved,
+          autofocus: widget.autofocus,
+          autovalidateMode: widget.autovalidateMode,
+          textDirection: widget.textDirection,
+          style: widget.textStyle,
+          cursorWidth: 1.0,
+          cursorColor: widget.cursorColor,
+          cursorHeight: widget.cursorHeight,
+          cursorRadius: widget.cursorRadius,
+          decoration: InputDecoration(
+            suffixIcon: widget.suffixIcon,
+            hintText: widget.hintText,
+            hintStyle: widget.hintStyle,
+            labelText: widget.labelText,
+            border: const UnderlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.transparent,
+              ),
             ),
-            borderRadius: const BorderRadius.all(
-              Radius.circular(8),
+            enabledBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.transparent,
+              ),
             ),
-          ),
-          border: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: const Color(0xFFD0D5DD).withOpacity(1.0),
+            focusedBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.transparent,
+              ),
             ),
-            borderRadius: const BorderRadius.all(
-              Radius.circular(8),
+            focusedErrorBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.transparent,
+              ),
+            ),
+            errorBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.transparent,
+              ),
+            ),
+            disabledBorder: const UnderlineInputBorder(
+              borderSide: BorderSide(
+                color: Colors.transparent,
+              ),
             ),
           ),
         ),
       ),
     );
   }
+  
 }
