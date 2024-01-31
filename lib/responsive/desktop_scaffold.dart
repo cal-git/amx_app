@@ -12,17 +12,6 @@ class DesktopScaffold extends StatefulWidget {
 class _DesktopScaffoldState extends State<DesktopScaffold> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: myDefaultBackground,
-      body: Column(
-        children: [
-          myWindowTitleBarBox,
-          const Padding(
-            padding: EdgeInsets.all(50),
-            child: HomePage(),
-          ),
-        ],
-      ),
-    );
+    return const HomePage();
   }
 }

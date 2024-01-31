@@ -109,6 +109,15 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  bool get _botaoHabilitado =>
+      _nomeUsuController.text.isNotEmpty && _passwordController.text.isNotEmpty;
+
+  void _habilitarBotao() {
+    setState(() {
+      
+    });
+  }
+
   void openURL() async {
     final Uri urlSnkAmx =
         Uri.parse('http://americanflex.snk.ativy.com:40031/mge/');
@@ -130,7 +139,7 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               if (!removerImagem)
                 const Image(
-                  image: AssetImage('assets/images/Arte Reforce 1.png'),
+                  image: AssetImage('assets/images/Modelo 1_v2.jpg'),
                   fit: BoxFit.contain,
                   alignment: Alignment.centerLeft,
                 ),
@@ -142,7 +151,7 @@ class _LoginPageState extends State<LoginPage> {
                     Container(
                       width: 430,
                       height: 520,
-                      padding: EdgeInsets.only(top: 0),
+                      padding: const EdgeInsets.symmetric(vertical: 73),
                       decoration: BoxDecoration(
                           color: const Color(0xFFFFFFFF),
                           borderRadius: BorderRadius.circular(28),
@@ -158,7 +167,7 @@ class _LoginPageState extends State<LoginPage> {
                       child: Form(
                         key: _formKey,
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
                             Container(
                               width: 90,
@@ -174,12 +183,30 @@ class _LoginPageState extends State<LoginPage> {
                                 fit: BoxFit.contain,
                               ),
                             ),
-                            const SizedBox(height: 77),
+                            const SizedBox(height: 8),
+                            const Text('Bem Vindo(a).',
+                            style: TextStyle(
+                              fontFamily: 'Inter',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            ),
+                            const SizedBox(height: 25),
                             CustomTextFormField(
                               hasError: hasErrorNomeUsu,
-                              onFieldSubmitted: (value) => _submitForm(),
+                              onFieldSubmitted: (value) {
+                                {
+                                  if (hasErrorNomeUsu == true ||
+                                      hasErrorPassword == true) {
+                                    return;
+                                  } else {
+                                    _submitForm();
+                                  }
+                                }
+                              },
                               onChanged: (value) {
                                 _nomeUsuController.text = value;
+                                _habilitarBotao();
                                 if (value.isEmpty) {
                                   setState(() {
                                     hasErrorNomeUsu = true;
@@ -192,33 +219,17 @@ class _LoginPageState extends State<LoginPage> {
                               },
                               height: 52,
                               obscureText: false,
-                              hintText: 'Usuário',
+                              hintText: hasErrorNomeUsu? 'Informe um usuário' : 'Usuário',
+                              hintStyle: hasErrorNomeUsu? const TextStyle(color: Color(0xFFD32F2F)) : null,
                               controller: _nomeUsuController,
                               autofocus: false,
                             ),
-                            const SizedBox(height: 12),
-                            Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 35),
-                                  child: Visibility(
-                                    visible: hasErrorNomeUsu,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(bottom: 12.0),
-                                      child: Text('Campo obrigatório',
-                                      style: TextStyle(
-                                        color: Colors.red[900],
-                                      ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                            const SizedBox(height: 8),
                             CustomTextFormField(
                               hasError: hasErrorPassword,
                               onChanged: (value) {
                                 _passwordController.text = value;
+                                _habilitarBotao();
                                 if (value.isEmpty) {
                                   setState(() {
                                     hasErrorPassword = true;
@@ -229,10 +240,20 @@ class _LoginPageState extends State<LoginPage> {
                                   });
                                 }
                               },
-                              onFieldSubmitted: (value) => _submitForm(),
+                              onFieldSubmitted: (value) {
+                                {
+                                  if (hasErrorNomeUsu == true ||
+                                      hasErrorPassword == true) {
+                                    return;
+                                  } else {
+                                    _submitForm();
+                                  }
+                                }
+                              },
                               obscureText: _obscureText,
                               height: 52,
-                              hintText: 'Senha',
+                              hintText: hasErrorPassword? 'Informe uma senha' : 'Senha',
+                              hintStyle: hasErrorPassword? const TextStyle(color: Color(0xFFD32F2F)) : null,
                               controller: _passwordController,
                               suffixIcon: MouseRegion(
                                 cursor: SystemMouseCursors.click,
@@ -246,30 +267,14 @@ class _LoginPageState extends State<LoginPage> {
                                     _obscureText
                                         ? Icons.visibility_off
                                         : Icons.visibility,
-                                    color: hasErrorPassword? Colors.red[900] : const Color(0xFF00224b),
+                                    color: hasErrorPassword
+                                        ? const Color(0xFFD32F2F)
+                                        : const Color(0xFF00224b),
                                   ),
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 6),
-                            Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 35),
-                                  child: Visibility(
-                                    visible: hasErrorPassword,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(bottom: 12.0),
-                                      child: Text('Campo obrigatório',
-                                      style: TextStyle(
-                                        color: Colors.red[900],
-                                      ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                            const SizedBox(height: 8),
                             Wrap(
                               alignment: WrapAlignment.center,
                               crossAxisAlignment: WrapCrossAlignment.center,
@@ -317,34 +322,30 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ],
                             ),
-                            const SizedBox(height: 55),
-                            Container(
-                              width: 360,
-                              height: 44,
-                              child: ElevatedButton(
-                                onPressed: () async {
-                                  _submitForm();
+                            const SizedBox(height: 25),
+                            MouseRegion(
+                              cursor: _botaoHabilitado
+                                  ? SystemMouseCursors.click
+                                  : SystemMouseCursors.basic,
+                              child: GestureDetector(
+                                onTap: () async {
+                                  _botaoHabilitado ? _submitForm() : null;
                                 },
-                                style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateColor.resolveWith(
-                                    (states) => const Color(0xFF001C4B),
-                                  ),
-                                  shape: MaterialStateProperty.resolveWith(
-                                    (states) => const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(8),
+                                child: Container(
+                                  width: 360,
+                                  height: 44,
+                                  decoration: BoxDecoration(
+                                      color: const Color(0xFF00224b),
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: const Center(
+                                    child: Text(
+                                      'ENTRAR',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontFamily: 'Inter',
+                                        fontWeight: FontWeight.w500,
                                       ),
                                     ),
-                                  ),
-                                ),
-                                child: const Text(
-                                  'ENTRAR',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'Inter',
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 14,
                                   ),
                                 ),
                               ),

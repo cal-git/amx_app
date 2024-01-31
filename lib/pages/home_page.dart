@@ -1,7 +1,10 @@
 import 'package:amx_app/models/snkapi_cliente_model.dart';
+import 'package:amx_app/responsive/constants.dart';
 import 'package:amx_app/widgets/custom_textformfield_widget.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:date_picker_plus/date_picker_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:syncfusion_flutter_datepicker/datepicker.dart';
@@ -18,13 +21,15 @@ class _HomePageState extends State<HomePage> {
     days: 1,
   );
   final player = AudioPlayer();
-  DateTime today = DateTime.now();
+  DateFormat f = DateFormat('yyyy-MM-dd hh:mm');
+  String formattedDate = '';
   bool autofocusNumSerie = false;
   int codInvent = 0;
   int contadorTotal = 0;
   int contadorParcial = 0;
   TextEditingController dateController = TextEditingController();
   TextEditingController numeroSerie = TextEditingController();
+  final TextEditingController _dateController = TextEditingController();
   var maskFormater = MaskTextInputFormatter(
     mask: "##/##/####",
     type: MaskAutoCompletionType.lazy,
@@ -151,70 +156,125 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     var textTheme = Theme.of(context).textTheme;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          'Contagem de Inventário',
-          style: TextStyle(
-            color: Colors.black,
-            fontFamily: 'Inter',
-            fontWeight: FontWeight.w600,
-            fontSize: 20,
-          ),
-        ),
-        const SizedBox(height: 26),
-        Container(
-          padding: const EdgeInsets.all(
-            16.0,
-          ), // Adicione espaço interno ao redor da Column
-          decoration: BoxDecoration(
-            // border: Border.all(
-            //   color: Colors.black.withOpacity(0.1), // Cor da borda
-            //   width: 2.0, // Largura da borda
-            // ),
-            borderRadius: BorderRadius.circular(8),
-            color: Colors.white,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
-                children: [
-                  const Text('Nome'),
-                  const Icon(
-                    Icons.emergency_rounded,
-                    color: Color(0xFFE12121),
-                    size: 10,
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Row(
+        children: [
+          myDrawer,
+          Padding(
+            padding: const EdgeInsets.all(50),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Contagem de Inventário',
+                  style: TextStyle(
+                    fontFamily: 'Inter',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
                   ),
-                  const SizedBox(width: 7),
-                  Text(
-                    capitalizeFirstLetter(user.nomeUsuCplt),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 26),
-              Row(
-                children: [
-                  const Text('Depósito'),
-                  const Icon(
-                    Icons.emergency_rounded,
-                    color: Color(0xFFE12121),
-                    size: 10,
-                  ),
-                  const SizedBox(width: 7),
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: const Color(0xFFE6E6E6),
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: 200,
+                  child: TextFormField(
+                    decoration: const InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(4),
+                          topRight: Radius.circular(4),
+                        ),
+                        borderSide: BorderSide(
+                          color: Color(0xFF79747E),
+                          width: 2.0,
+                        ),
                       ),
-                      borderRadius: const BorderRadius.all(
-                        Radius.circular(8),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(4),
+                          topRight: Radius.circular(4),
+                        ),
+                        borderSide: BorderSide(
+                          color: Color(0xFF00224b),
+                          width: 2.0,
+                        ),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(4),
+                          topRight: Radius.circular(4),
+                        ),
+                        borderSide: BorderSide(
+                          color: Colors.red,
+                          width: 2.0,
+                        ),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(4),
+                          topRight: Radius.circular(4),
+                        ),
+                        borderSide: BorderSide(
+                          color: Colors.red,
+                          width: 2.0,
+                        ),
+                      ),
+                      hintText: 'Data',
+                      label: Text('Data'),
+                      suffixIcon: Icon(
+                        Icons.date_range_outlined,
                       ),
                     ),
-                    height: 40,
-                    child: DropdownButton<Location>(
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Visibility(
+                      child: Container(
+                        width: 400,
+                        height: 300,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFFFFFF),
+                          borderRadius: const BorderRadius.only(
+                            bottomLeft: Radius.circular(8),
+                            bottomRight: Radius.circular(8),
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color.fromARGB(
+                                  (0.10 * 255).round(), 0, 28, 75),
+                              offset: const Offset(12.0, 12.0),
+                              blurRadius: 62.0,
+                              spreadRadius: 0.0,
+                            ),
+                          ],
+                        ),
+                        child: SfDateRangePicker(
+                          selectionMode: DateRangePickerSelectionMode.single,
+                          headerStyle: const DateRangePickerHeaderStyle(
+                            backgroundColor: Color(0xFF00224b),
+                            textAlign: TextAlign.center,
+                            textStyle: TextStyle(
+                              fontFamily: 'Inter',
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
+                          showNavigationArrow: true,
+                          selectionColor: const Color(0xFF00224b),
+                          todayHighlightColor: const Color(0xFF00224b),
+                          monthCellStyle: const DateRangePickerMonthCellStyle(
+                            todayTextStyle: TextStyle(
+                              color: Color(0xFF00224b),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    DropdownButton<Location>(
                       padding: const EdgeInsets.fromLTRB(12, 0, 12, 0),
                       underline: const SizedBox(),
                       iconEnabledColor: Colors.black,
@@ -233,308 +293,49 @@ class _HomePageState extends State<HomePage> {
                         );
                       }).toList(),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 26),
-              Row(
-                children: [
-                  const Text('Data do Inventário'),
-                  const Icon(
-                    Icons.emergency_rounded,
-                    color: Color(0xFFE12121),
-                    size: 10,
-                  ),
-                  const SizedBox(width: 7),
-                  // ElevatedButton(
-                  //   onPressed: () {
-                  //     Navigator.push(
-                  //       context,
-                  //       MaterialPageRoute(
-                  //         builder: (context) => const DatePicker(),
-                  //       ),
-                  //     );
-                  //   },
-                  //   child: Text('Data'),
-                  // ),
-                  CustomTextFormField(
-                    enabled: enableData,
-                    maxLength: 10,
-                    onChanged: (value) async {
-                      if (value.length == 10) {
-                        codInvent = await getcodInvent();
-                        if (codInvent != 0) {
-                          contadorTotal = await getContadorTotal();
-                          setState(() {
-                            isButtonEnabled = true;
-                            enableData = false;
-                            enabledNumeroSerie = true;
-                            autofocusNumSerie = true;
-                            enableDropDown = false;
-                            //contadorTotal = contadorTotal;
-                          });
-                        } else {
-                          setState(() {
-                            enabledNumeroSerie = false;
-                          });
-                          final snackBar = SnackBar(
-                            backgroundColor: Colors.red[900],
-                            content: const Text(
-                              'Não existe um inventário aberto para esta data no depósito selecionado.',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontFamily: 'Inter',
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14,
-                              ),
-                            ),
-                            action: SnackBarAction(
-                              textColor: Colors.white,
-                              label: 'OK',
-                              onPressed: () {
-                                //TODO
-                              },
-                            ),
-                          );
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                          setState(() {
-                            contadorTotal = 0;
-                          });
-                        }
-                      }
-                    },
-                    controller: dateController,
-                    inputFormatters: [maskFormater],
-                  ),
-                  const SizedBox(width: 7),
-                ],
-              ),
-            ],
+                  ],
+                ),
+                // ElevatedButton(
+                //     onPressed: () async {
+                //       var date = await showDatePickerDialog(
+                //         context: context,
+                //         initialDate: DateTime.timestamp(),
+                //         minDate: DateTime(2020, 10, 10),
+                //         maxDate: DateTime(2024, 12, 31),
+                //         currentDate: DateTime(2022, 10, 15),
+                //         selectedDate: DateTime(2022, 10, 16),
+                //         currentDateDecoration: const BoxDecoration(),
+                //         currentDateTextStyle: const TextStyle(),
+                //         daysOfTheWeekTextStyle: const TextStyle(),
+                //         disbaledCellsDecoration: const BoxDecoration(),
+                //         disbaledCellsTextStyle: const TextStyle(),
+                //         enabledCellsDecoration: const BoxDecoration(),
+                //         enabledCellsTextStyle: const TextStyle(),
+                //         selectedCellDecoration: const BoxDecoration(),
+                //         selectedCellTextStyle: const TextStyle(),
+                //         leadingDateTextStyle: const TextStyle(
+                //           fontFamily: 'Inter',
+                //           fontSize: 14,
+                //         ),
+                //         slidersColor: const Color(0xFF00224b),
+                //         highlightColor: const Color(0xFF00224b),
+                //         slidersSize: 20,
+                //         splashColor: Colors.grey,
+                //         splashRadius: 40,
+                //         centerLeadingDate: true,
+                //       );
+                //       if (date != null) {
+                //         formattedDate = DateFormat('dd/MM/yyyy').format(date);
+                //         print(formattedDate);
+                //       }
+                //     },
+                //     child: Text('Calendário'),
+                //   ),
+              ],
+            ),
           ),
-        ),
-        const SizedBox(height: 16),
-        Row(
-          children: [
-            Expanded(
-              child: ElevatedButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.resolveWith(
-                    (states) => const Color(0xFF00224b),
-                  ),
-                  shape: MaterialStateProperty.resolveWith(
-                    (states) => RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                ),
-                onPressed: isButtonEnabled
-                    ? () {
-                        setState(() {
-                          enableData = true;
-                          enableDropDown = true;
-                          enabledNumeroSerie = false;
-                          isButtonEnabled = false;
-                          numeroSerie.clear();
-                          dateController.clear();
-                          contadorTotal = 0;
-                          contadorParcial = 0;
-                        });
-                      }
-                    : null,
-                child: const Text(
-                  'Modificar Parâmetros',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontFamily: 'Inter',
-                    fontWeight: FontWeight.normal,
-                    fontSize: 14,
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 16),
-        Container(
-          padding: const EdgeInsets.all(
-            16.0,
-          ), // Adicione espaço interno ao redor da Column
-          decoration: BoxDecoration(
-            // border: Border.all(
-            //   color: Colors.black.withOpacity(0.1), // Cor da borda
-            //   width: 2.0, // Largura da borda
-            // ),
-            borderRadius: BorderRadius.circular(8),
-            color: Colors.white,
-          ),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  const Text('Número de Série'),
-                  const Icon(
-                    Icons.emergency_rounded,
-                    color: Color(0xFFE12121),
-                    size: 10,
-                  ),
-                  const SizedBox(width: 7),
-                  Flexible(
-                    child: SizedBox(
-                      width: 115,
-                      child: CustomTextFormField(
-                        focusNode: focusNode,
-                        maxLength: 10,
-                        controller: numeroSerie,
-                        enabled: enabledNumeroSerie,
-                        onFieldSubmitted: (value) async {
-                          var numSerie = await postNumSerie();
-                          if (numSerie != null && numSerie.status == 0) {
-                            if (numSerie.statusMessage!
-                                .contains('já foi lido')) {
-                              await player.play(
-                                AssetSource(
-                                    'sounds/dcc765_LeituraDuplicada.wav'),
-                              );
-                              final snackBar = SnackBar(
-                                backgroundColor: Colors.red[900],
-                                content: const Text(
-                                  'Número de série já lido nesta contagem.',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'Inter',
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              );
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(snackBar);
-                              numeroSerie.clear();
-                              FocusScope.of(context).requestFocus(focusNode);
-                            } else {
-                              await player.play(
-                                AssetSource('sounds/dcc765_Erro.wav'),
-                              );
-                              setState(() {
-                                enabledNumeroSerie = false;
-                              });
-                              final snackBar = SnackBar(
-                                duration: durationSanckBar,
-                                backgroundColor: Colors.red[900],
-                                content: const Text(
-                                  'Número de série inválido.',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'Inter',
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                                action: SnackBarAction(
-                                  textColor: Colors.white,
-                                  label: 'OK',
-                                  onPressed: () {
-                                    setState(() {
-                                      numeroSerie.clear();
-                                      enabledNumeroSerie = true;
-                                    });
-                                    FocusScope.of(context)
-                                        .requestFocus(focusNode);
-                                  },
-                                ),
-                              );
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(snackBar);
-                            }
-                          } else {
-                            setState(() {
-                              contadorParcial = contadorParcial + 1;
-                            });
-                            await player.play(
-                              AssetSource('sounds/dcc765_LeituraOK.wav'),
-                            );
-                            numeroSerie.clear();
-                            FocusScope.of(context).requestFocus(focusNode);
-                          }
-                        },
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 26),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            ElevatedButton(
-              onPressed: () => setState(() {}),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.resolveWith(
-                  (states) => const Color(0xFF00224b),
-                ),
-                shape: MaterialStateProperty.resolveWith(
-                  (states) => RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-              ),
-              child: Text(
-                'Contador Parcial: $contadorParcial',
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () => setState(() {
-                contadorTotal = contadorTotal + contadorParcial;
-                contadorParcial = 0;
-              }),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.resolveWith(
-                  (states) => const Color(0xFF00224b),
-                ),
-                shape: MaterialStateProperty.resolveWith(
-                  (states) => RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-              ),
-              child: const Text(
-                'Zerar Contador Parcial',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () => setState(() {}),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.resolveWith(
-                  (states) => const Color(0xFF00224b),
-                ),
-                shape: MaterialStateProperty.resolveWith(
-                  (states) => RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-              ),
-              child: Text(
-                'Contador Total: $contadorTotal',
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

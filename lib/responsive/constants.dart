@@ -35,7 +35,7 @@ var myAppBar = AppBar(
 );
 
 var myDrawer = Drawer(
-  backgroundColor: myDefaultBackground,
+  backgroundColor: const Color(0xFF120C18),
   child: Builder(
     builder: (context) => buildDrawer(context),
   ),
@@ -44,17 +44,6 @@ var myDrawer = Drawer(
 Widget buildDrawer(BuildContext context) {
   return Column(
     children: [
-      DrawerHeader(
-        child: CircleAvatar(
-          backgroundColor: Colors.grey[100],
-          radius: 60,
-          child: Icon(
-            Icons.add_a_photo_rounded,
-            size: 80,
-            color: Colors.grey[200],
-          ),
-        ),
-      ),
       const ListTile(
         leading: Icon(Icons.home_outlined),
         title: Text('H O M E'),

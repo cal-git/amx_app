@@ -86,7 +86,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
         color: const Color(0xFFC4CED7).withOpacity(0.3),
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
-          color: widget.hasError ? Colors.red : Colors.transparent,
+          color: widget.hasError ? const Color(0xFFD32F2F) : Colors.transparent,
         ),
       ),
       width: widget.width,

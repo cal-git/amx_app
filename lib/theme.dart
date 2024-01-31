@@ -51,4 +51,12 @@ final theme = ThemeData(
     backgroundColor: Color(0xFF00224b),
     centerTitle: true,
   ),
+  inputDecorationTheme: const InputDecorationTheme(
+    border: OutlineInputBorder(
+      borderSide: BorderSide(
+        color: Color(0xFF79747E),
+        width: 2.0,
+      ),
+    ),
+  ),
 );

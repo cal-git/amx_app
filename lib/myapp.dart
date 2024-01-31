@@ -8,6 +8,7 @@ import 'package:amx_app/responsive/tablet_scaffold.dart';
 import 'package:amx_app/theme.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -19,6 +20,11 @@ class MyApp extends StatelessWidget {
     win.title = 'Inventario AMX';
     win.minSize = minSize;
     return MaterialApp(
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate
+      ],
+      supportedLocales: const [Locale('pt', 'BR')],
       title: 'Inventario Americanflex',
       theme: theme,
       //home: const LoginPage(),
@@ -36,7 +42,6 @@ class MyApp extends StatelessWidget {
             win.maximize();
             win.show();
           });
-          //return const HomePage();
           return const ResponsiveLayout(
             mobileScaffold: MobileScaffold(),
             tabletScaffold: TabletScaffold(),
